@@ -1,0 +1,60 @@
+import numpy as np
+
+def main():
+    maze = np.array([[0,0,0,0,0,0,0,0,0],
+                     [0,0,2,0,0,0,5,0,0],
+                     [0,0,1,9,8,7,6,0,0],
+                     [0,0,0,0,1,0,4,0,0],
+                     [0,0,0,0,0,0,0,0,0]])
+    return pathing(maze)
+
+def scan(maze,current_y,current_x,explored):
+    possible_route = []
+    x_plus = maze[current_y,current_x+1]
+    x_min = maze[current_y,current_x-1]
+    y_plus = maze[current_y+1,current_x]
+    y_min = maze[current_y-1,current_x]
+
+    if x_plus != 0 and x_plus not in explored:
+        route_info = {'number':x_plus,'cord_y':current_y,'cord_x':current_x+1}
+        possible_route.append(route_info)   
+    if x_min != 0 and x_min not in explored:
+        route_info = {'number':x_min,'cord_y':current_y,'cord_x':current_x-1}
+        possible_route.append(route_info)
+    if y_plus != 0 and y_plus not in explored:
+        route_info = {'number':x_plus,'cord_y':current_y+1,'cord_x':current_x}
+        possible_route.append(route_info)
+    if y_min != 0 and y_min not in explored:
+        route_info = {'number':y_min,'cord_y':current_y-1,'cord_x':current_x}
+        possible_route.append(route_info)
+    return possible_route
+
+def movement(move):
+
+    current_y = move['cord_y']
+    current_x = move['cord_x']
+    return [current_y,current_x]
+
+def pathing(maze):
+    goal = 5
+    current_x = 3
+    current_y = 2
+    explored = [0,maze[current_y,current_x]]
+    routes = []
+
+    for ticker in range(10000):
+        options = scan(maze,current_y,current_x,explored)
+        
+        for i in range(len(options)):
+            routes.append(options[i])
+
+        if routes[0]['number'] == goal:
+            return goal, current_x,current_y 
+        elif len(routes) >= 1:
+            move = movement(routes[0])
+            routes.pop(0)
+            current_y = move[0]
+            current_x = move[1]
+
+if __name__ == '__main__':           
+    print(main())
